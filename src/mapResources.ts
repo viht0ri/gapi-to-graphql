@@ -2,10 +2,10 @@ import { keyMap, keys, upperFirst } from './utils'
 import { GraphQLString, GraphQLObjectType } from 'graphql'
 import { mapParametersToArguments } from './mapParametersToArguments'
 import makeApiRequest from './request'
-import { Context } from '.'
+import { Context, IClient } from '.'
 import { resolve } from 'url'
 
-const mapResources = (resources, graphQLTypes, resourceResolvers, resolverMap) => {
+const mapResources = (resources, graphQLTypes, resourceResolvers, resolverMap, client : IClient) => {
   return keyMap(resources, (resource, resourceDetails) => {
     const resourceName = `${upperFirst(resource)}_`
 
@@ -18,13 +18,13 @@ const mapResources = (resources, graphQLTypes, resourceResolvers, resolverMap) =
 
       const resolve = async (parent, args, ctx) => {
         const { rootArgs, rootDefinitions, baseUrl } = parent
-
         return await makeApiRequest({
           definitions: { ...rootDefinitions, ...parameters },
           args: { ...rootArgs, ...args },
           baseUrl,
           path,
-          httpMethod
+          httpMethod,
+          client
         })
       }
 
