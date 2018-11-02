@@ -44,6 +44,41 @@ server.listen({ port: 3031 }).then(({ url }) => {
 
 > Run  example with `node --experimental-modules index.mjs`
 
+
+## Example on the server with Google Compute Engine default service account
+
+> index.mjs 
+```javascript
+import gapiToGraphQL from "gapi-to-graphql";
+import DriveAPI from "gapi-to-graphql/google_apis/drive-v3";
+import { auth } from "google-auth-library";
+
+
+(async () => {
+  const gclient = await auth.getClient({
+    scopes: 'https://www.googleapis.com/auth/drive.metadata.readonly',
+  });
+  const clientFunc = (params) => {
+    return new Promise((resolve, reject) => {
+            gclient.request(params).then(resolve, reject);
+    })
+  }
+  const { schema, resolvers } = gapiToGraphQL({ gapiAsJsonSchema: DriveAPI }, clientFunc);
+  const server = new ApolloServer({
+    typeDefs: gql`${schema}`,
+    resolvers
+    }
+  });
+
+  server.listen({ port: 3031 }).then(({ url }) => {
+    console.log(`🚀  Server ready at ${url}`);
+  });
+
+});
+
+```
+> Run  example with `node --experimental-modules index.mjs`
+
 ## Query usage
 
 ```graphql
