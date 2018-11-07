@@ -14,7 +14,7 @@
     "scratch": "nodemon --exec ts-node src/scratch.ts",
     "build": "tsc",
     "prepublishOnly": "npm run clean && npm run download-apis && npm run compile-ts && npm run gapi-move",
-    "postInstall": "npm run prepublishOnly",
+    "postinstall": "npm run prepublishOnly",
     "clean": "rm -rf dist && rm -rf google_apis && rm -rf src/google_apis && mkdir src/google_apis",
     "download-apis": "ts-node src/_download_all_gapis.ts",
     "compile-ts": "tsc",
